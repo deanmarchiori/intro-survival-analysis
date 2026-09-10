@@ -1,0 +1,212 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Survival Analysis",
+    "section": "",
+    "text": "Preface\nAbout this book\na\na\na\na\na\na\na\na\na\na\na\na\na",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#who-is-this-for",
+    "href": "index.html#who-is-this-for",
+    "title": "Survival Analysis",
+    "section": "Who is this for?",
+    "text": "Who is this for?\n\n\n\n\n\n\nWarning\n\n\n\nThis is a work in progress and is considered in DRAFT form. The contents (hopefully) will change and evolve over time. I would welcome any early feedback on the content or new interesting additions.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#contact-me",
+    "href": "index.html#contact-me",
+    "title": "Survival Analysis",
+    "section": "Contact Me",
+    "text": "Contact Me\nIf you would like to get in touch head over to deanmarchiori.com",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#contributing",
+    "href": "index.html#contributing",
+    "title": "Survival Analysis",
+    "section": "Contributing",
+    "text": "Contributing\nContributions to this work are welcomed via Issues on the Github page.\nPlease note that this project uses a Contributor Code of Conduct. By contributing to this book, you agree to abide by its terms.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#licence",
+    "href": "index.html#licence",
+    "title": "Survival Analysis",
+    "section": "Licence",
+    "text": "Licence\nThis work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "chapters/introduction.html",
+    "href": "chapters/introduction.html",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "1.1 Time to Event Data",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/introduction.html#example-dataset",
+    "href": "chapters/introduction.html#example-dataset",
+    "title": "1  Introduction",
+    "section": "1.2 Example Dataset",
+    "text": "1.2 Example Dataset\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/nonparametric.html",
+    "href": "chapters/nonparametric.html",
+    "title": "2  Non Parametric Modelling",
+    "section": "",
+    "text": "2.1 Kaplan Meier Curves",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Non Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/nonparametric.html#kaplan-meier-curves",
+    "href": "chapters/nonparametric.html#kaplan-meier-curves",
+    "title": "2  Non Parametric Modelling",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Non Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html",
+    "href": "chapters/semiparametric.html",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "",
+    "text": "3.1 Basic theory of survival/hazard curves",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html#cox-ph-model-specifics",
+    "href": "chapters/semiparametric.html#cox-ph-model-specifics",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "3.2 Cox PH Model specifics",
+    "text": "3.2 Cox PH Model specifics",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html#fitting-a-basic-coxph-model",
+    "href": "chapters/semiparametric.html#fitting-a-basic-coxph-model",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "3.3 Fitting a basic CoxPH model",
+    "text": "3.3 Fitting a basic CoxPH model",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html#interpretation-hyp-tests",
+    "href": "chapters/semiparametric.html#interpretation-hyp-tests",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "3.4 Interpretation / Hyp Tests",
+    "text": "3.4 Interpretation / Hyp Tests",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html#contrasts",
+    "href": "chapters/semiparametric.html#contrasts",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "3.5 Contrasts?",
+    "text": "3.5 Contrasts?",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html#estimating-baseline-hazard-fn",
+    "href": "chapters/semiparametric.html#estimating-baseline-hazard-fn",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "3.6 Estimating Baseline hazard fn",
+    "text": "3.6 Estimating Baseline hazard fn",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html#diagnostics",
+    "href": "chapters/semiparametric.html#diagnostics",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "3.7 Diagnostics",
+    "text": "3.7 Diagnostics\n\n3.7.1 Prop hazards assumptions\n\n\n3.7.2 Goodness of fit\n\n\n3.7.3 Influence",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html#stratification",
+    "href": "chapters/semiparametric.html#stratification",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "3.8 Stratification",
+    "text": "3.8 Stratification",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/semiparametric.html#time-dependent-covariates",
+    "href": "chapters/semiparametric.html#time-dependent-covariates",
+    "title": "3  Semi-Parametric Modelling",
+    "section": "3.9 Time dependent covariates",
+    "text": "3.9 Time dependent covariates\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Semi-Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/parametric.html",
+    "href": "chapters/parametric.html",
+    "title": "4  Parametric Modelling",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Parametric Modelling</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/workflow.html",
+    "href": "chapters/workflow.html",
+    "title": "5  Workflow",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/references.html",
+    "href": "chapters/references.html",
+    "title": "References",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "References"
+    ]
+  }
+]

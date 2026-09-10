@@ -1,0 +1,32 @@
+project:
+  type: book
+
+book:
+  title: "Survival Analysis"
+  subtitle: "An introduction guide in R"
+  author: "Dean Marchiori"
+  date: today
+  cover-image: img/cover.jpeg
+  chapters:
+    - index.qmd
+    - chapters/introduction.qmd
+    - chapters/nonparametric.qmd  
+    - chapters/semiparametric.qmd
+    - chapters/parametric.qmd  
+    - chapters/workflow.qmd  
+    - chapters/references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt  
+  epub: 
+    toc: true
+
+editor: source
+
+nocite: |
+  @*

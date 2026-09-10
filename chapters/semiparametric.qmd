@@ -1,0 +1,26 @@
+# Semi-Parametric Modelling  
+
+## Basic theory of survival/hazard curves  
+
+## Cox PH Model specifics  
+
+## Fitting a basic CoxPH model  
+
+## Interpretation / Hyp Tests  
+
+## Contrasts?  
+
+## Estimating Baseline hazard fn  
+
+## Diagnostics  
+
+### Prop hazards assumptions  
+
+### Goodness of fit  
+
+### Influence  
+
+## Stratification  
+
+## Time dependent covariates  
+

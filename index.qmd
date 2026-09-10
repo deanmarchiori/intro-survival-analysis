@@ -1,0 +1,44 @@
+# Preface {.unnumbered}
+
+About this book  
+a   
+a  
+a   
+a   
+a  
+a  
+a  
+a  
+a  
+a  
+a  
+a  
+a  
+
+
+## Who is this for?  
+
+
+
+::: {.callout-warning}
+**This is a work in progress and is considered in DRAFT form.** The contents (hopefully)
+will change and evolve over time. I would welcome any early feedback on the content
+or new interesting additions. 
+:::
+
+
+## Contact Me  
+If you would like to get in touch head over to [deanmarchiori.com](https://www.deanmarchiori.com/)
+
+
+## Contributing  
+
+Contributions to this work are welcomed via [Issues](https://github.com/deanmarchiori/datasci-workflows-book/issues) on the Github page.  
+
+Please note that this project uses a [Contributor Code of Conduct](https://www.contributor-covenant.org/version/2/0/code_of_conduct/). By contributing to this book, you agree to abide by its terms.  
+
+## Licence  
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
+
+
