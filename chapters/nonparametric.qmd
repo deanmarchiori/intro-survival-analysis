@@ -1,3 +1,112 @@
 # Non Parametric Modelling  
 
-## Kaplan Meier Curves  
+```{r}
+#| label: setup
+#| include: false
+
+library(survival) # key package for survival analysis
+library(ggplot2) # for making plots 
+library(ggsurvfit) # nicer survival graphics
+library(dplyr)
+```
+
+## Doin' it by hand 
+
+
+## Survival Objects
+
+Turning time to event data into a 'survival' object witht he `Surv()` function. 
+
+```{r}
+with(aml, Surv(time = time, event = status))
+```
+
+### Kaplan-Meier Survival Curves
+
+Normally this is wrapped in another function. Here we use the `survfit()` function to fit a survival curve. 
+
+```{r}
+km <- survfit(Surv(time, status) ~ 1, data = aml) 
+```
+
+Gives us survival summary stats at various time points.  
+
+```{r}
+summary(km)
+```
+
+We can specify a time point we care about, for example, 30-day survival. 
+
+```{r}
+summary(km, times = 30)
+```
+
+Plot a Kaplam-Meier curve 
+
+```{r}
+plot(km)
+```
+
+
+We can do this manually with `ggplot2::geom_step()` 
+
+```{r}
+km_df <- data.frame(
+  time   = km$time,
+  surv   = km$surv,
+  lower  = km$lower,
+  upper  = km$upper
+)
+
+ggplot(km_df, aes(x = time, y = surv)) +
+  geom_step() +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+
+head(km_df)
+```
+
+
+Enhanced plot with `{ggsurvfit}` 
+
+Note: The `survfit2()` function. 
+
+```{r}
+survfit2(Surv(time, status) ~ 1, data = aml) |>
+  ggsurvfit()
+```
+
+
+```{r}
+survfit2(Surv(time, status) ~ 1, data = aml) |>
+  ggsurvfit() +
+  add_confidence_interval() +
+  add_risktable() +
+  add_quantile(y_value = 0.5, color = "gray50", linewidth = 0.75) +
+  scale_ggsurvfit()
+```
+
+
+### Log-Rank Test
+
+Often we want to compare groups. 
+
+```{r}
+aml 
+```
+
+```{r}
+survfit2(Surv(time, status) ~ x, data = aml) |>
+  ggsurvfit() +
+  add_confidence_interval() +
+  add_risktable() +
+  add_quantile(y_value = 0.5, color = "gray50", linewidth = 0.75) +
+  scale_ggsurvfit()
+```
+
+```{r}
+# Test whether survival differs between groups
+logrank_test <- survdiff(Surv(time, status) ~ x, data = aml)
+
+logrank_test
+```

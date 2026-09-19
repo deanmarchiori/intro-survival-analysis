@@ -1,5 +1,26 @@
-# Introduction
+# Introduction  
+
+## Setup 
+
+Load the required packages 
+
+```{r}
+library(survival) # key package for survival analysis
+library(ggplot2) # for making plots 
+library(ggsurvfit) # nicer survival graphics
+```
+
 
 ## Time to Event Data  
 
+
 ## Example Dataset  
+
+```{r}
+data(cancer, package = "survival")
+```
+
+```{r}
+print(aml)
+```
+
