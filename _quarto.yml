@@ -1,10 +1,18 @@
 project:
   type: book
+  output-dir: docs
 
 book:
-  title: "Survival Analysis"
-  subtitle: "An introduction guide in R"
+  title: "Surviving Survival Analysis"
+  subtitle: "A Hands-On Introduction with R"
   author: "Dean Marchiori"
+  downloads: [pdf]  
+  search: true
+  navbar:
+    right: 
+      - icon: github
+        href: https://github.com/deanmarchiori/intro-survival-analysis
+        aria-label: Github
   date: today
   cover-image: img/cover.jpeg
   chapters:
@@ -14,6 +22,9 @@ book:
     - chapters/semiparametric.qmd
     - chapters/parametric.qmd  
     - chapters/workflow.qmd  
+  appendices:
+    - chapters/faq.qmd  
+    - chapters/mathematics.qmd
     - chapters/references.qmd
 
 bibliography: references.bib
@@ -21,10 +32,8 @@ bibliography: references.bib
 format:
   html:
     theme: cosmo
-  pdf:
-    documentclass: scrreprt  
-  epub: 
-    toc: true
+  pdf: 
+    theme: scrbook
 
 editor: source
 

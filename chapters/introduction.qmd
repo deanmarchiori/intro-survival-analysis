@@ -5,22 +5,194 @@
 Load the required packages 
 
 ```{r}
-library(survival) # key package for survival analysis
-library(ggplot2) # for making plots 
-library(ggsurvfit) # nicer survival graphics
+#| message: false
+library(survival)   # key package for survival analysis
+library(ggsurvfit)  # nicer survival graphics
+library(tidyverse)  # data wrangling
+library(broom)      # tidy model outputs
 ```
 
+## What is Survival Analysis?   
 
-## Time to Event Data  
+Survival analysis involves analysing time-to-event data. This may be survival of a patient, but it may also be applied to any data where we have measured the time taken to record an event, such as machine failure, customer churn etc.     
+
+This combines two things:   
+
+a) An event/non-event indicator and;  
+b) The time taken for the event to occur/not occur.   
 
 
-## Example Dataset  
+A common task is analysing binary outcome data for events (yes/no, 0/1 etc). There are a range of popular methods for this task. What they all have in common, is that we are definitively classifying each subject into one class or another - so in effect, all subjects have concluded their follow up period. This doesn't help us understand the probability of these events over time. It also doesn't help us if subjects drop-off (a real-world issue).  
+
+Conversely, we can analyse times as a continuous value, just like any other continuous, positive value. However we can't just analyse the event times. We also need to measure the times when subjects were lost to follow up. Why? If we don't we are biasing our estimates by removing subjects who haven't yet experienced an event. We can't understand how long things survive by analysing only those who die.      
+
+So we need a way of combining a binary *event* data and continuous *time* data.   
+
+id | time | status 
+----|----|----  
+1 | 5 | 1  
+2 | 10 | 0  
+3 | 13 | 1 
+4 | 18 | 1  
+5 | 20 | 0
+
+
+## Dealing with events  
+
+Typically an event is encoded as a binary status indicator variable where the status indicator, normally 0 = alive, 1 = dead. Other choices are TRUE/FALSE (TRUE = death) or 1 = alive, 2 = dead. 
+
+::: {.callout-tip}
+## Useless Fact
+The use of 1/2 for alive/dead instead of the usual 0/1 is a historical footnote. For data contained on punch cards, IBM 360 Fortran treated blank as a zero, which led to a policy within the section of Biostatistics to never use "0" as a data value since one could not distinguish it from a missing value. The policy became a habit, as is often the case; and the 1/2 coding endured long beyond the demise of punch cards and Fortran.
+:::  
+
+While some subjects will experience an event, for other subjects, their survival times will be unknown. This can occur if a study concludes and some subjects have not yet recorded an event. Alternatively some subjects may drop out and be lost to follow up.   
+
+We still need a way to record the time when they didn't experience the event - which is a weird thing to think about.  
+
+For example, A trial follows 200 patients for 5 years to see how long they survive after starting a new cancer drug. When the study ends, some patients are still alive. For those patients, you know they survived at least 5 years, but you don't know their actual survival time. It could be 5.1 years or 20 years.  
+
+This is known as censoring. The most common form is right censoring (as above). There is also left censoring and interval censoring (these are beyond the scope of the workshop).  
+
+So, our event indicator is actually event = 1, censored = 0.    
+
+::: {.callout-note}  
+### Exercise: Classroom Discussion   
+
+How should we handle censoring?    
+
+
+::: {.callout-caution collapse="true"}
+## a) Pretend censored times are events.
+We know the event hasn't occurred. It might still occur, but the event time will be longer then the censoring time, so it will bias the results.  
+
+:::    
+
+::: {.callout-caution collapse="true"}
+## b) Drop censored observations from the analysis.  
+Keeping only subjects who experienced the event will understate survival estimates as we don't incorporate those at risk who haven't (and don't) experience the event.
+
+:::
+
+
+::: {.callout-caution collapse="true"}
+## c) Analyse the outcomes as binary events. 
+
+This is essentially what logistic regression does. It assumes the negative class explicitly states the event did *not* occur. This is fine
+if there is a consistent and definitive follow up period. But in many cases we have varying follow up times. Someone who just enrolled in a clinical trial has had less exposure. This will bias events occurring to those with longer follow up times.  
+:::    
+
+::: {.callout-tip collapse="true"}
+## d) Use survival analysis
+
+The methods we will learn allow us to measure and model survival times, while accounting for censoring in our dataset. 
+:::  
+
+<br>
+
+:::    
+
+
+### Dealing with times    
+
+Where does the `time` variable come from? Often we have staggered start times or deal with cohorts. Survival analysis typically is performed with a consistent follow up time. Below is an example of how we might create this `time` variable from dates.  
+
+![Converting calendar time in the ovarian cancer study to a survival analysis format. Dashed vertical line is the date of the last follow-up, R=relapse, D=death from ovarian cancer, Do=death from other cause, A=attended last clinic visit (alive), L=loss to follow-up, X=death, □=censored. Source: Clark, T., Bradburn, M., Love, S. et al. Survival Analysis Part I: Basic concepts and first analyses. Br J Cancer 89, 232–238 (2003). https://doi.org/10.1038/sj.bjc.6601118](../img/times.png){#fig-times}
+
+How can we do this in R? Below is a made-up example. 
 
 ```{r}
-data(cancer, package = "survival")
+#| include: false
+
+time_raw <- tibble(
+  date_start = sample(seq.Date(from = "1990-01-01", to = "1990-03-01"), 10),
+  date_end = date_start + days(c(2, 6, 10, 25, 17, 9, 16, 19, 10, 9)),
+  event = c(1, 1, 1, 1, 1, 1, 1, 0, 0, 0)
+)
 ```
 
 ```{r}
-print(aml)
+time_raw
 ```
 
+::: {.callout-tip}
+## The `{lubridate}` package
+
+The `{lubridate}` package in R can help work with dates. We can use `interval()` to calculate the exact difference between two dates. Expressing this in some units can be done using either Durations or Periods. Durations are consistent mathematically, however Periods may map onto our intuition of the date-time line a little better. See here: https://lubridate.tidyverse.org/articles/lubridate.html#arithmetic-with-date-times
+
+:::  
+
+```{r}
+time_raw |> 
+  mutate(
+    time = interval(date_start, date_end) / ddays(1)
+  ) |> 
+    select(time, event)
+
+```
+
+
+## Example Datasets  
+
+The `{survival}` package has many build in datasets for use.  
+
+```{r}
+data(package = "survival")
+```
+
+### Acute Myelogenous Leukemia survival data  
+
+Survival in patients with Acute Myelogenous Leukemia. The question at the time was whether the standard course of chemotherapy should be extended ('maintainance') for additional cycles.    
+
+```{r}
+head(aml)
+```
+
+| Variable | Description |
+| --- | --- |
+| time | Survival or censoring time |
+| status | Censoring status |
+| x | Maintenance chemotherapy given? (factor) |  
+
+*source: Rupert G. Miller (1997), Survival Analysis. John Wiley & Sons. ISBN: 0-471-25218-2.*  
+
+### NCCTG Lung Cancer Data  
+
+Survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. Performance scores rate how well the patient can perform usual daily activities.  
+
+```{r}
+head(lung)
+```  
+
+| Variable | Description |
+|----------|-------------|
+| `inst` | Institution code |
+| `time` | Survival time in days |
+| `status` | Censoring status (1 = censored, 2 = dead) |
+| `age` | Age in years |
+| `sex` | Sex (1 = Male, 2 = Female) |
+| `ph.ecog` | ECOG performance score rated by physician (0 = asymptomatic, 1 = symptomatic but ambulatory, 2 = in bed <50% of day, 3 = in bed >50% of day but not bedbound, 4 = bedbound) |
+| `ph.karno` | Karnofsky performance score rated by physician (0 = bad, 100 = good) |
+| `pat.karno` | Karnofsky performance score rated by patient (0 = bad, 100 = good) |
+| `meal.cal` | Calories consumed at meals |
+| `wt.loss` | Weight loss in last six months (pounds) |
+
+*source: Loprinzi CL. Laurie JA. Wieand HS. Krook JE. Novotny PJ. Kugler JW. Bartel J. Law M. Bateman M. Klatt NE. et al. Prospective evaluation of prognostic variables from patient-completed questionnaires. North Central Cancer Treatment Group. Journal of Clinical Oncology. 12(3):601-7, 1994.*  
+
+### Stanford Heart Transplant data    
+
+Survival of patients on the waiting list for the Stanford heart transplant program.  
+
+```{r}
+head(heart)
+```  
+
+| Variable | Description |
+| --- | --- |
+| age | Age − 48 years |
+| year | Year of acceptance (years after 1 Nov 1967) |
+| surgery | Prior bypass surgery (1 = yes) |
+| transplant | Received transplant (1 = yes) |
+| id | Patient ID |  
+
+*Source: J Crowley and M Hu (1977), Covariance analysis of heart transplant survival data. Journal of the American Statistical Association, 72, 27–36.*

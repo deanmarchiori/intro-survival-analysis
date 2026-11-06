@@ -1,1 +1,95 @@
 # Workflow
+
+```{mermaid}
+flowchart TD
+  A[(survival data)] --> B[Kaplan-Meier Estimator]
+  B --> C[Log Rank Test]  
+  C --> D[Cox Proportional Hazards Model]
+  C -.-> E[Fully parametric model]  
+  C -.-> F[AFT, other exotic..]
+  D --> G[Diagnostics]
+  G --> D
+  
+  
+  style D fill:#f9f
+```
+
+a. Initial displays
+i. Check number of failures is sufficient for
+i. For all subjects
+ii. For each level of categorical variables to be included in the model
+For each there should usually be a minimum of about 10, although some authors
+suggest 5. If there are not sufficient for one level of a category, it may be possible to
+rectify this by merging categories, but only with the guidance of a clinician. Another
+option is to exclude these subjects from the analysis. If this is not possible, profile
+likelihood and Bayesian methods can be used but are beyond this course. This will
+also identify if any category values are not defined.
+ii. Distribution of continuous predictors
+The usual method is to use histograms as a graphical summary is usually easier to
+interpret. What we are interested in is are there unusual values, for example zeroes
+or negative values which may be used to indicate missing data, or simply values that
+are so extreme that they are not biologically feasible. Skewness may indicate the
+need for a transformation.
+iii. Kaplan-Meier Plots
+
+These should be performed for each categorical predictor and for continuous pre-
+dictors by classifying into a small number of groups, usually 3. What is of interest
+
+is whether there appears to be an effect of a predictor, and whether that effect is
+similar over time. For continuous predictors it may also give an indication that the
+effect is linear. If a numerical summary is required or useful then medians with
+confidence intervals or percentage survival and confidence interval at a sensible time
+are suitable.
+iv. Relations (optional)
+It may also be useful to investigate the relationship between the predictors. This
+can be achieved through 2-way tabulation of categorical predictors, matrix scatter
+plots of continuous predictors and boxplots of continuous predictors by categorical
+predictors.
+b. Model Building
+i. Perform steps from HL&M
+
+1. We begin by fitting a multivariable model containing all variables
+significant in the univariable analysis at the 20-25 percent level,  
+
+2. we use the p-
+values from the Wald tests of the individual coefficients to identify covariates that might be deleted from the model.  
+
+3. Following the fit of the reduced model, we assess whether removal of
+
+the covariate has produced an "important" change in the coefficients of the vari-
+ables remaining in the model. In general, we use a value of about 20 percent as an
+
+indicator of an important change in a coefficient. If the variable excluded is an
+
+important confounder, it should be added back into the model. This process con-
+tinues until no covariates can be deleted from the model.  
+
+4. At this point, we add to the model, one at a time, all variables ex-
+cluded from the initial multivariable model to confirm that they are neither statisti-
+cally significant nor an important confounder.
+
+5. Interactions 
+
+
+
+
+
+ii. Check proportional hazards and modify model if required
+iii. Repeat until proportional hazards is OK
+c. Check diagnostics for final model
+i. Proportional hazards
+ii. Cox-Snell
+iii. dfBeta
+d. Predicted survival curves
+These are useful for showing the effect of predictors and the survival over time. Especially
+useful with stratified models, as they show how survival differs between the strata.
+e. Tabulated hazard rates
+
+For continuous predictors this should include units. For categorical predictors the refer-
+ence level should be included. Where a transformation or polynomial has been used, it
+
+should show the variation in the effect by showing the hazard ratio at a number of values,
+and for published work it may be useful to generate a plot. 
+
+## End to End  
+

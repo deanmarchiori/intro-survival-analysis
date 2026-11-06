@@ -1,39 +1,60 @@
 # Preface {.unnumbered}
 
-About this book  
-a   
-a  
-a   
-a   
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
+How long until something happens? How long until a patient dies, a machine breaks down, a customer cancels their subscription, or a piece of equipment fails. These "time until X" questions seem simple, but they trip up standard statistical methods in ways that are easy to miss and hard to undo. This issue is one of the more common and consequential mistakes in applied statistics, and it has its own dedicated toolkit for a reason.
+
+This workshop will cover Foundations: what makes time to event data different, and why it needs specialised methods. Non parametric estimation: Kaplan Meier curves and log rank tests, including how to interpret and visualise them. Semi parametric modeling: the Cox proportional hazards model, hazard ratios, and checking the proportional hazards assumption. Extensions (time permitting): parametric survival models.  
+
+Participants will work through live coded examples and short guided exercises in R, using realistic datasets, and will leave with a working script they can adapt to their own time to event data. 
 
 
-## Who is this for?  
+## About this workshop  
+
+This workshop offers a practical, code first introduction to survival analysis using R. We will build up from first principles to applied modeling.  
+
+**Format**: 3 hours, mix of live coding, guided exercises, and Q&A.   
+
+**Requirements**:   
+- A laptop with a recent R installation and RStudio or similar IDE installed.  
+- Some familiarity with R and basic regression (for example linear or logistic regression models) is assumed.  
+- No prior survival analysis experience is necessary.  
+
+## Setup  
+
+**R Packages Used**:  
+
+Below are the packages used in this workshop. To install these run `install.packages('pkgname')`
+```{r}
+#| eval: false
+library(survival)   # key package for survival analysis
+library(ggsurvfit)  # nicer survival graphics
+library(tidyverse)  # data wrangling
+```
+
+## Schedule  
+
+Time | Topic  
+-----|---------  
+0900 | Intro, Housekeeping, Setup  
+0915 | Chapter 1: Introduction  
+0930 | Chapter 2: Non parametric modelling    
+1030 | Break 
+1100 | Chapter 3: Semi-parametric modelling  
+1145 | Chapter 4: Extension: Parametric modelling     
+1200 | Chapter 5: Workflows  
+1215 | Q & A 
+1230 | Finish
 
 
+## About Me    
 
-::: {.callout-warning}
-**This is a work in progress and is considered in DRAFT form.** The contents (hopefully)
-will change and evolve over time. I would welcome any early feedback on the content
-or new interesting additions. 
-:::
+Dean Marchiori is a Statistician specialising in computational statistics and applied mathematical modelling. He is Director and Principal Data Scientist at Wave Data Labs, Lead Data Scientist for the South Eastern Sydney Local Health District with NSW Health and Co-Chair of the Section for Statistical Computing and Visualisation with the Statistical Society of Australia. Dean obtained his Bachelor of Science in Mathematics with University Medal from Charles Sturt University. He also holds a Master of Applied Finance degree, and a Master of Applied Statistics from Macquarie University where he was awarded the Julian Leslie Prize in Statistics, and served as a sessional teaching academic in the School of Mathematical and Physical Sciences. Dean holds the Accredited Statistician (AStat) qualification from the Statistical Society of Australia and was named one of the top 10 analytics professionals in Australia by the Institute of Analytics Professionals of Australia (IAPA).   
 
-
-## Contact Me  
 If you would like to get in touch head over to [deanmarchiori.com](https://www.deanmarchiori.com/)
 
 
 ## Contributing  
 
-Contributions to this work are welcomed via [Issues](https://github.com/deanmarchiori/datasci-workflows-book/issues) on the Github page.  
+Contributions to this work are welcomed via [Issues](https://github.com/deanmarchiori/intro-survival-analysis) on the Github page.  
 
 Please note that this project uses a [Contributor Code of Conduct](https://www.contributor-covenant.org/version/2/0/code_of_conduct/). By contributing to this book, you agree to abide by its terms.  
 

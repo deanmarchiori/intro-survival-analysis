@@ -1,4 +1,6 @@
-# Non Parametric Modelling  
+# Non Parametric Modelling   
+
+We want to obtain some estimate of the survival of subjects in our data. Defining a survival function will help us describe the probability of survival at a given time $S(t)$
 
 ```{r}
 #| label: setup
@@ -7,105 +9,214 @@
 library(survival) # key package for survival analysis
 library(ggplot2) # for making plots 
 library(ggsurvfit) # nicer survival graphics
-library(dplyr)
+library(tidyverse)
 ```
 
-## Doin' it by hand 
+## Kaplan-Meier Estimator 
 
+A commonly used method to describe the survival or subjects in our data, without making concrete assumptions about the distributions in our data, is the Kaplan-Meier Estimator^[https://en.wikipedia.org/wiki/Kaplan%E2%80%93Meier_estimator].  
 
-## Survival Objects
+We can use the observed data to estimate the conditional probability of confirmed survival at each observed survival time. We need to do this for each interval to correctly account for how many subjects remain 'at risk' due to an event or censoring. We can multiply these conditional probability estimates together to form our estimated survival function $\hat{S}(t)$.  
 
-Turning time to event data into a 'survival' object witht he `Surv()` function. 
+Remember, we have a random variable $T$ representing time. The probability density function of $T$ is given by $f(t)$.   
+
+$$
+P(t \le T < t + dt) \approx f(t)\,dt
+$$  
+
+As usual, the cumulative density function is given by $F(t)$.   
+
+$$
+F(t) = P(T \le t) = \int_0^t f(u)\,du
+$$  
+
+It is usually more interesting to talk about the probability of survival, rather than the probability of cumulative failure. We can see that:  
+
+$$
+S(t)= P(T > t)
+$$   
+and so   
+
+$$
+S(t) = 1 - F(t)
+$$  
+
+### Example  
+
+Let's take our `aml` data and sort it ascending by event time (We can ignore the grouping for now). 
+
+Splitting the data into intervals, based on each event time we can count how many death events 'd' and how many censoring events 'c' in each interval between events.  Next, at each time increment we need to calculate $n$ the number at risk. This involves taking the number at risk at the previous event time and subtracting any subjects who died or were censored in the last period. Doing it this way ensures our denominator is correct when calculating survival probabilities.   
 
 ```{r}
-with(aml, Surv(time = time, event = status))
+km1 <- aml |> 
+  select(-x) |> 
+  arrange(time) |> 
+  count(time, status) |> 
+  pivot_wider(names_from = status, values_from = n, values_fill = 0) |> 
+  select(time, d = `1`, c = `0`)
+
+km1
 ```
-
-### Kaplan-Meier Survival Curves
-
-Normally this is wrapped in another function. Here we use the `survfit()` function to fit a survival curve. 
 
 ```{r}
-km <- survfit(Surv(time, status) ~ 1, data = aml) 
+#| include: false
+write_csv(km1, "km_byhand.csv")
+```
+   
+
+::: {.callout-caution}
+Remember, when calculating the conditional survival probability, the event and the censoring happen *at* the event time, so we don't subtract them from the risk set until the *next* interval. 
+:::
+
+We can calculate estimated probability of survival in each interval $i$ as $\frac{n_i - d_i}{n_i}$.  
+
+The estimated survival function is simply the multiplication of these conditional survival probabilities for each interval.  
+
+$$
+\hat{S}(t) = \prod_{t_i \leq t}{\frac{n_i - d_i}{n_i}}
+$$
+
+::: {.callout-note}  
+### Exercise   
+Calculate the Kaplan-Meier estimator manually in excel for the `aml` data.   
+The solution is implemented in R in the next section. 
+:::    
+
+
+## Calculating Kaplan-Meier Estimator in R 
+
+### Making a survival object  
+
+Turning time-to-event data into a 'survival' object with the `Surv()` function. 
+
+```{r}
+head(aml)
 ```
 
-Gives us survival summary stats at various time points.  
+```{r}
+Surv(time = aml$time, event = aml$status)
+```
+
+### Kaplan-Meier Survival function estimate  
+
+Normally this `Surv()` object is wrapped in another function. Here we use the `survfit()` function to fit a survival curve. For now let's ignore the `x` grouping column in the data.  
+
+```{r}
+km <- survfit(formula = Surv(time, status) ~ 1, data = aml) 
+```
+
+This gives us survival summary stats at various time points.  
 
 ```{r}
 summary(km)
 ```
 
+We can obtain estimates for the median survival. 
+
+```{r}
+print(km)
+```  
+
+
 We can specify a time point we care about, for example, 30-day survival. 
 
 ```{r}
 summary(km, times = 30)
+```  
+
+
+::: {.callout-note collapse="true"}
+### Exercise: If we ignored censoring, what would the survival probability be at time 30?   
+
+If we calculate the number of deaths at or before time = 30, divided by the number of subjects, we get the cumulative incidence. Subtracting from 1 gives us a naive estimate for survival. However, note that we have had three subjects drop out before time = 30. This means they are not in the risk set after their drop out time, so we need to remove them from the denominator. This will reduce the survival probability - and ignoring this overstates the survival estimate. 
+
+```{r}
+1 - (sum(aml[aml$time <= 30, "status"]) / nrow(aml))
 ```
 
-Plot a Kaplam-Meier curve 
+:::  
+
+
+
+
+## Graphing the Kaplan-Meier Curve  
+
+Plot a Kaplan-Meier curve. We get 95% confidence intervals produced also.  
 
 ```{r}
 plot(km)
 ```
 
 
-We can do this manually with `ggplot2::geom_step()` 
+There is nothing magic happening here. Let's do this manually with `ggplot2::geom_step()` 
 
 ```{r}
 km_df <- data.frame(
   time   = km$time,
-  surv   = km$surv,
-  lower  = km$lower,
-  upper  = km$upper
+  surv   = km$surv
 )
-
-ggplot(km_df, aes(x = time, y = surv)) +
-  geom_step() +
-  scale_y_continuous(limits = c(0, 1)) +
-  theme_minimal()
 
 head(km_df)
 ```
 
+```{r}
+ggplot(km_df, aes(x = time, y = surv)) +
+  geom_step() +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+```
 
-Enhanced plot with `{ggsurvfit}` 
 
-Note: The `survfit2()` function. 
+More enhanced plots can be made with `{ggsurvfit}`  
+
+::: {.callout-note}
+The `survfit2()` function is used instead of `survfit()`. This is a wrapper of the original function that helps with more advanced downstream calculations.  
+:::  
+
 
 ```{r}
 survfit2(Surv(time, status) ~ 1, data = aml) |>
   ggsurvfit()
 ```
 
+The `{ggsurvfit}` allows us to add useful layers such as confidence intervals, risk tables and quantiles.  
 
 ```{r}
 survfit2(Surv(time, status) ~ 1, data = aml) |>
   ggsurvfit() +
   add_confidence_interval() +
   add_risktable() +
-  add_quantile(y_value = 0.5, color = "gray50", linewidth = 0.75) +
+  add_quantile(y_value = 0.5, color = "gray50") +
   scale_ggsurvfit()
 ```
 
 
-### Log-Rank Test
+## Comparing Two Survival Functions
 
-Often we want to compare groups. 
+Often we want to compare groups. In our `aml` data the `x` column indicates if the standard course of chemotherapy should be extended (‘maintainance’) for additional cycles.  
+
+How do the estimated survival functions compare?  
 
 ```{r}
 aml 
 ```
 
+We can alter the `survfit2()` function to draw separate Kaplan-Meier curves for each group.  
+
 ```{r}
-survfit2(Surv(time, status) ~ x, data = aml) |>
+survfit2(Surv(time, status) ~ x, data = aml) |>  #<1>
   ggsurvfit() +
   add_confidence_interval() +
   add_risktable() +
   add_quantile(y_value = 0.5, color = "gray50", linewidth = 0.75) +
-  scale_ggsurvfit()
-```
+  scale_ggsurvfit()   
+```  
+
+1. Note the inclusion of the variable after the `~`.  
+
+The `survdiff()` function lets us run a logrank test. This is a hypothesis test to test if there is a difference between two or more survival curves.  This type of test works similar to a Chi-Square test for independence, and provides a p-value. A p-value below our chosen threshold provides evidence to reject the null hypothesis that the curves are similar.  
 
 ```{r}
-# Test whether survival differs between groups
 logrank_test <- survdiff(Surv(time, status) ~ x, data = aml)
 
 logrank_test

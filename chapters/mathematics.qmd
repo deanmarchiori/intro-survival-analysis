@@ -1,0 +1,154 @@
+# Mathematics {.unnumbered}
+
+
+# From the density function to everything else
+
+The plan is to start with one object, the density f(t), and derive every other survival function from it in turn.
+
+## Step 0: The setup
+
+Let T ≥ 0 be the time until an event. Suppose T is continuous, with density f(t), where
+
+$$f(t) \ge 0 \quad \text{and} \quad \int_0^\infty f(t)\,dt = 1$$
+
+**Meaning of f(t):** for a very small interval of width dt,
+
+$$P(t \le T < t + dt) \approx f(t)\,dt$$
+
+So f(t) is not a probability itself. It is probability *per unit time*, and you get real probabilities by integrating it.
+
+## Step 1: The CDF, F(t)
+
+The probability that the event has happened by time t is the area under the density up to t:
+
+$$F(t) = P(T \le t) = \int_0^t f(u)\,du$$
+
+By the fundamental theorem of calculus, differentiating recovers the density:
+
+$$F'(t) = f(t)$$
+
+## Step 2: The survival function, S(t)
+
+Survival analysis asks the opposite question: what is the chance the event has *not* happened yet?
+
+$$S(t) = P(T > t) = 1 - F(t) = \int_t^\infty f(u)\,du$$
+
+Differentiating $S(t) = 1 - F(t)$ gives
+
+$$S'(t) = -f(t)$$
+
+Properties: S(0) = 1, S is non-increasing, and S(t) → 0 as t → ∞.
+
+## Step 3: The hazard function, h(t)
+
+The density f(t) includes the chance of having survived to t in the first place. We often want the risk *among those still at risk*. Define the hazard as the event rate in the next instant, given survival to t:
+
+$$h(t) = \lim_{\Delta t \to 0} \frac{P(t \le T < t + \Delta t \mid T \ge t)}{\Delta t}$$
+
+**Derivation.** By the definition of conditional probability,
+
+$$P(t \le T < t+\Delta t \mid T \ge t) = \frac{P(t \le T < t+\Delta t)}{P(T \ge t)} = \frac{F(t+\Delta t) - F(t)}{S(t)}$$
+
+Divide by Δt and take the limit. The numerator becomes the derivative of F:
+
+$$h(t) = \frac{1}{S(t)} \lim_{\Delta t \to 0}\frac{F(t+\Delta t) - F(t)}{\Delta t} = \frac{F'(t)}{S(t)} = \frac{f(t)}{S(t)}$$
+
+**Result:**
+
+$$\boxed{h(t) = \frac{f(t)}{S(t)}}$$
+
+## Step 4: Hazard as a log-derivative of S
+
+Since $f(t) = -S'(t)$, substitute into the hazard:
+
+$$h(t) = \frac{-S'(t)}{S(t)} = -\frac{d}{dt}\log S(t)$$
+
+The last step uses the chain rule: $\frac{d}{dt}\log S(t) = \frac{S'(t)}{S(t)}$.
+
+## Step 5: The cumulative hazard, H(t)
+
+Define it as the accumulated hazard:
+
+$$H(t) = \int_0^t h(u)\,du$$
+
+Now use Step 4 and integrate both sides from 0 to t:
+
+$$\int_0^t h(u)\,du = -\int_0^t \frac{d}{du}\log S(u)\,du = -\big[\log S(u)\big]_0^t = -\log S(t) + \log S(0)$$
+
+Because S(0) = 1, we have log S(0) = 0, so
+
+$$H(t) = -\log S(t)$$
+
+Rearranging gives the central identity:
+
+$$\boxed{S(t) = e^{-H(t)} = \exp\!\left\{-\int_0^t h(u)\,du\right\}}$$
+
+** include Model3 p10 outline on hazard fn to baseline survival
+
+## Step 6: Getting the density back from the hazard
+
+From Step 3, $f(t) = h(t)\,S(t)$. Substituting Step 5:
+
+$$f(t) = h(t)\,\exp\!\left\{-\int_0^t h(u)\,du\right\}$$
+
+This closes the loop. Any one of f, F, S, h or H determines all the others.
+
+## Step 7: Mean survival time
+
+The mean is $E[T] = \int_0^\infty t\,f(t)\,dt$. Use integration by parts with $u = t$ and $dv = f(t)\,dt$, so that $v = -S(t)$, since $S'(t) = -f(t)$:
+
+$$\int_0^\infty t\,f(t)\,dt = \big[-t\,S(t)\big]_0^\infty + \int_0^\infty S(t)\,dt$$
+
+The boundary term is 0 at t = 0 because of the factor t, and 0 at infinity as long as S(t) decays faster than 1/t. That leaves
+
+$$\boxed{E[T] = \int_0^\infty S(t)\,dt}$$
+
+The mean survival time is the area under the survival curve. The **median** m solves $S(m) = 0.5$.
+
+## Worked example: the exponential distribution
+
+Start from the density with rate λ > 0:
+
+$$f(t) = \lambda e^{-\lambda t}, \quad t \ge 0$$
+
+| Quantity | Derivation | Result |
+|---|---|---|
+| CDF | $F(t)=\int_0^t \lambda e^{-\lambda u}du = 1 - e^{-\lambda t}$ | $1 - e^{-\lambda t}$ |
+| Survival | $S(t) = 1 - F(t)$ | $e^{-\lambda t}$ |
+| Hazard | $h(t) = f(t)/S(t) = \lambda e^{-\lambda t}/e^{-\lambda t}$ | $\lambda$ (constant) |
+| Cumulative hazard | $H(t) = \int_0^t \lambda\,du$ | $\lambda t$ |
+| Check | $e^{-H(t)} = e^{-\lambda t}$ | matches $S(t)$ ✓ |
+| Mean | $\int_0^\infty e^{-\lambda t}dt$ | $1/\lambda$ |
+| Median | solve $e^{-\lambda m} = 0.5$ | $\ln 2 / \lambda$ |
+
+The hazard being constant means the risk never changes with time. This is the *memoryless* property.
+
+## A second example: the Weibull distribution
+
+Instead of starting from the density, start from a hazard that changes with time:
+
+$$h(t) = \lambda k\, t^{k-1}$$
+
+Integrate to get the cumulative hazard:
+
+$$H(t) = \int_0^t \lambda k\,u^{k-1}du = \lambda t^k$$
+
+Then apply the identity from Step 5:
+
+$$S(t) = e^{-\lambda t^k}, \qquad f(t) = h(t)S(t) = \lambda k\,t^{k-1}e^{-\lambda t^k}$$
+
+For k > 1 the hazard rises over time (wear-out). For k < 1 it falls (early failures). For k = 1 it reduces to the exponential.
+
+## Summary of the chain
+
+$$f(t) \;\xrightarrow{\;\int_0^t\;}\; F(t) \;\xrightarrow{\;1-F\;}\; S(t) \;\xrightarrow{\;-\frac{d}{dt}\log\;}\; h(t) \;\xrightarrow{\;\int_0^t\;}\; H(t) \;\xrightarrow{\;e^{-H}\;}\; S(t)$$
+
+| Function | Question it answers | Relation |
+|---|---|---|
+| f(t) | How is event probability spread over time? | $-S'(t)$ |
+| F(t) | Chance the event has occurred by t? | $\int_0^t f$ |
+| S(t) | Chance of surviving past t? | $1-F(t) = e^{-H(t)}$ |
+| h(t) | Instantaneous risk for those still at risk? | $f(t)/S(t)$ |
+| H(t) | Total risk accumulated by t? | $-\log S(t)$ |
+
+If you'd like, the next step is showing how censoring changes the likelihood built from these functions, which is where they become practically useful.

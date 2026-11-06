@@ -1,26 +1,406 @@
 # Semi-Parametric Modelling  
 
-## Basic theory of survival/hazard curves  
+```{r}
+#| label: setup
+#| include: false
 
-## Cox PH Model specifics  
+library(survival) 
+library(ggsurvfit) 
+library(tidyverse)
+library(broom)
+```
 
-## Fitting a basic CoxPH model  
+In the previous section we explored an effective method for univariate analysis, and even extended this to comparing a few discrete groups e.g. disease categories, sex, age groups. Can we extend this to studying the effects of a number of covariates, similar to how we do regression modelling?  
 
-## Interpretation / Hyp Tests  
 
-## Contrasts?  
+## Basic theory of survival/hazard curves     
 
-## Estimating Baseline hazard fn  
+Starting with just survival times, we can define the **probability density** of survival times as $f(t)$, where: 
+
+
+$$P(t \le T < t + dt) \approx f(t)\,dt$$
+    
+
+$$f(t) \ge 0 \quad \text{and} \quad \int_0^\infty f(t)\,dt = 1$$  
+
+This is the unconditional probability of experiencing the event when viewed from time 0.  
+
+It's often more interesting to understand the **cumulative density function**:
+
+$$F(t) = P(T \le t) = \int_0^t f(u)\,du$$
+
+
+This describes the probability of an event happening at some time before time $t$. 
+
+It's often *even more* interesting to talk about the probability of survival, rather than the probability of cumulative failure.  
+
+$$S(t) = P(T > t) = 1 - F(t) = \int_t^\infty f(u)\,du$$
+
+It's often *even, even more* interesting to think about the **hazard function.** If we ask, what is the probability of a subject dying at 5 years, it's obvious that the subject was alive up until year 4. So it's natural to ask about the instantaneous hazard of dying at year 5, conditional of being alive until year 5. This is different to asking about the unconditional probability density of a subject dying at exactly 5 years. The hazard function incorporates ageing and knowledge accumulated throughout the study and provides information more relevant to making decisions through time.  
+
+We can define the hazard function as  
+
+$$
+h(t) = \frac{f(t)}{S(t)}
+$$  
+This is essentially the unconditional probability of seeing an event at time t, scaled by the survival of subjects up until time $t$.   
+
+We can define the **cumulative hazard function** as 
+
+$$H(t) = \int_0^t h(u)\,du$$
+
+This is a little like the accumulated hazard, or the cumulative force of mortality. 
+
+Differentiating $S(t) = 1 - F(t)$ gives
+
+$$S'(t) = -f(t)$$  
+So 
+
+
+$$f(t) = -S'(t)$$  
+
+Substituting into the hazard function:
+
+$$h(t) = \frac{-S'(t)}{S(t)} = -\frac{d}{dt}\log S(t)$$
+
+(This result is due to the chain rule)  
+
+Substituting this expression back into our cumulative hazard function we get:  
+
+$$\int_0^t h(u)\,du = -\int_0^t \frac{d}{du}\log S(u)\,du = -\big[\log S(u)\big]_0^t = -\log S(t) + \log S(0)$$
+As $S(0) = 1$, we have $\log S(0) = 0$, so  
+
+$$H(t) = -\log S(t)$$  
+
+Rearranging we get back to the survival function: 
+
+$$\boxed{S(t) = e^{-H(t)}}$${#eq-surv1}
+
+It should now be clear there is a close relationship between the density function, hazard function and suvival function. If one is able to specify the hazard function, then the cumulative hazard, and hence,
+the survival function are also specified.
+
+
+
+## Cox Proportional Hazards Model   
+
+We are often in a setting where we may wish to see if survival is more favorable under a "new" treatment when compared with the "standard." We need a model to compare the *relative* survival experience of the two treatment groups, and give us the ability to adjust for other patient characteristics.   
+
+Fully parametric models (models that explicitly describe the statistical distribution of the hazard function) can certainly be used to accomplish this goal. However, these added assumptions are often not required and require more justification.
+
+Survival time models that have a fully parametric regression structure but leave their dependence
+on time unspecified are called semi-parametric regression models. The most common is the Cox proportional hazards model.
+
+If we start with a constant hazard function with respect to time: 
+
+$$
+h(t) = 0.3
+$$
+A common parameterisation is to ensure that this value is positive by letting the hazard rate at baseline be $\beta_0$ and taking the exponent so we have  
+
+$$
+h(t) = e^{\beta_0}
+$$
+It would be great to add other covariates to this function 
+
+$$
+h(t, x) = e^{\beta_0 + \beta_x}
+$$
+
+
+
+If we take $e^{\beta_0}$ as our baseline hazard rate 
+
+$$
+h(t, x) = e^{\beta_0}e^{\beta_1x} \\
+= h_0(t)e^{\beta x}
+$$
+The hazard function originally expressed is actually the product of two functions, the baseline hazard $h_0(t)$, which characterizes how the hazard function changes as a function of time. The other function, characterizes how the hazard function
+changes as a function of the covariates.
+
+We can compute the hazard ratio (HR) as  
+
+$$
+HR(t, x_1, x_0) = \frac{h(t, x_1)}{h(t, x_0) }
+$$
+
+$$
+HR(t, x_1, x_0) = \frac{h(t_0)e^{\beta x_1}}{h(t_0)e^{\beta x_0}}
+$$
+Notice how the baseline hazard function $h(t_0)$ cancels out. 
+
+$$
+HR(t, x_1, x_0) = \frac{e^{\beta x_1}}{e^{\beta x_0}} \\
+= e^{\beta(x_1 - x_0)}
+$$
+
+In the above example, is $x$ is a dichotomous variable e.g. $x_1 = 1$ for female and $x_0 = 0$ for male we have
+
+$$
+HR(t, x_1, x_0) = e^\beta
+$$
+
+We can see three important results:  
+
+1. The hazard ratios are obtained directly from the regression coefficients (which we will learn to fit soon).   
+2. There is no dependence on time, as the baseline hazard rate cancelled out.   
+3. This is called a *proportional* hazards model as there is a multiplicative relationship with covariate values and the baseline hazard.    
+
+The implication here, are the assumptions around the proportional effect being constant over time. 
+
+::: {.callout-note}
+Note: We haven't discussed covariates that may change over time, this is a common extension that we will cover later.  
+:::  
+
+
+## Fitting a Cox Proportional Hazards Model  
+
+We fit a Cox PH model using `coxph()` from the `{survival}` package. The response is a `Surv` object encoding the event time and censoring indicator, exactly as used in the Kaplan-Meier estimator. We'll use the `lung` dataset, which contains survival data from an NCCTG lung cancer trial with several patient-level covariates.
+
+The model we are fitting is 
+
+$$
+h(t) = h_0(t) \exp{(\beta_0 + \beta_1x_1 + ...)}
+$$
+The `coxph()` function estimates the partial likelihood — it finds $\hat{\beta}$ without needing to specify or estimate the baseline hazard $h_0(t)$. That is the key advantage of the Cox model: it is *semiparametric* in that the baseline hazard is left completely unspecified.  
+
+```{r}
+#| label: fit-cox
+
+cox_fit <- coxph(
+  Surv(time, status) ~ sex + age,
+  data = lung
+)
+
+summary(cox_fit)
+
+```
+
+## Interpretation 
+
+### Coefficients and hazard ratios  
+
+The raw coefficients $\hat{\beta}$ are on the log-hazard-ratio scale. Exponentiating them gives hazard ratios directly. The `{broom}` package makes this tidy:
+
+```{r}
+#| label: tidy-cox
+
+tidy(cox_fit, exponentiate = TRUE, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high, p.value)
+```
+
+Each hazard ratio represents the multiplicative change in the instantaneous hazard associated with a one-unit increase in the covariate, *holding all other covariates constant*.
+
+For example, if `sex` has $HR < 1$, female patients (coded 2) have a lower hazard of death relative to males, i.e. better survival after adjusting for age.   
+
+### Confidence intervals  
+
+95% confidence intervals on the hazard ratio scale are obtained by exponentiating the Wald-based interval on the log scale: $e^{\hat{\beta} \pm 1.96 \cdot SE(\hat{\beta})}$.  
+
+### Global tests  
+
+`summary()` reports three global tests of whether any covariate has a significant effect:
+
+| Test | Basis |
+|------|-------|
+| Likelihood ratio | Compares log-likelihoods of full vs null model |
+| Wald | Based on $\hat{\beta} / SE(\hat{\beta})$ |
+| Score (log-rank) | Based on score function at $\beta = 0$ |  
+
+In large samples all three are equivalent, the likelihood ratio test is generally preferred.  
+
+## Estimating Baseline Hazard & Survival Function 
+
+Although the Cox model does not require specifying $h_0(t)$, once we have estimated $\hat{\beta}$s we can recover a non-parametric estimate of the cumulative baseline hazard $\hat{H}_0(t)$ and baseline Survival Function $S_0(t)$ by setting all coefficient values to zero. 
+
+::: {.callout-caution}
+## Centering Covariates
+What is the interpretation of assuming the baseline survival or hazard rate is obtained by setting covariates to zero?  
+
+Does this make sense? 
+
+Should we considered centering our covariates to obtain more faithful estimates of baseline hazard curves?
+
+:::    
+
+By default `basehaz()` uses the mean of all covariates for computational stability: 
+
+> Many textbooks refer to H(t; 0) as "the" baseline hazard for a Cox model; this is returned by the centered= FALSE option. However, due to potential overflow or underflow in the exp() function this can be a very bad idea in practice  
+
+```{r}
+#| label: baseline-hazard
+
+# Cumulative baseline hazard (at mean of covariates by default)
+bh <- basehaz(cox_fit, centered = T)  # centered=FALSE gives H0(t)
+head(bh)
+```
+
+We can obtain baseline survival curve estimates using the result from @eq-surv1. 
+```{r}
+# Baseline survival S0(t) = exp(-H0(t))
+bh$surv0 <- exp(-bh$hazard)
+head(bh)
+
+ggplot(bh, aes(time, surv0)) +
+  geom_step() +
+  scale_y_continuous(limits = c(0, 1))
+```
+
+Comparing to the direct estimate from `survfit2()`
+```{r}
+survfit2(cox_fit) |> 
+  ggsurvfit::ggsurvfit()
+```
+
+More usefully, `survfit()` applied to a fitted Cox model produces survival curves at specified covariate values, resulting in a covariate-adjusted survival curve:
+
+```{r}
+#| label: cox-survfit
+# Survival curve for a 60-year-old female (sex=2) 
+new_patient <- data.frame(age = c(60, 60), sex = c(1, 2))
+cox_surv <- survfit(cox_fit, newdata = new_patient)
+
+plot(cox_surv, xlab = "Days", ylab = "S(t)", main = "Covariate-adjusted survival")
+```
 
 ## Diagnostics  
 
-### Prop hazards assumptions  
+We need to check the basic statistical assumptions behind the Cox proportional hazards model.  
+
+1. Proportional hazards assumption  
+2. Survival time of one patient does not depend upon the survival time of another.   
+3. Uninformative Censoring 
+
+### Proportional hazards assumption  
+
+The proportional hazards assumption states that the hazard ratio between any two covariate patterns is *constant over time*. Violation means the effect of a covariate changes as follow-up progresses.
+
+The standard test uses scaled Schoenfeld residuals (`cox.zph()`). If the PH assumption holds, the residuals should show no trend over time, and the test $p$-value should not be small.
+
+```{r}
+#| label: ph-test
+
+ph_test <- cox.zph(cox_fit)
+ph_test
+```
+
+```{r}
+#| label: ph-plots
+#| fig-height: 6
+
+plot(ph_test)
+```
+
+A statistically significant result for a covariate (small $p$-value) suggests that covariate's effect is not constant over time. Remedies include:
+
+- Adding a time-by-covariate interaction term
+- Stratifying on the offending variable (see Section below)
+- Fitting a time-varying coefficient model
 
 ### Goodness of fit  
 
+Martingale residuals assess whether the functional form of each continuous covariate is appropriate. They lie in $(-\infty, 1]$; a LOESS smoother of residuals vs covariate values should be flat around zero if the linear form is correct.
+
+```{r}
+#| label: martingale-residuals
+
+lung_complete <- na.omit(lung[, c("time", "status", "age", "sex")])
+
+mart_resid <- residuals(cox_fit, type = "martingale")
+
+# Check functional form of age
+ggplot(data.frame(age = lung_complete$age, resid = mart_resid), aes(age, resid)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "loess", se = FALSE) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "Age", y = "Martingale residual")
+```
+
+Deviance residuals (a normalised transform of martingale residuals) are more symmetric and useful for spotting poorly-fitted individuals:
+
+```{r}
+#| label: deviance-residuals
+
+dev_resid <- residuals(cox_fit, type = "deviance")
+
+ggplot(data.frame(index = seq_along(dev_resid), resid = dev_resid), aes(index, resid)) +
+  geom_point(alpha = 0.4) +
+  geom_hline(yintercept = c(-2, 2), linetype = "dashed", colour = "red") +
+  labs(x = "Observation index", y = "Deviance residual")
+```
+
+Points with $|r_D| > 2$ are candidates for closer inspection.
+
+
 ### Influence  
+
+`dfbeta` residuals estimate how much each coefficient changes if observation $i$ is deleted. Large values flag influential observations.
+
+```{r}
+#| label: influence
+
+dfbeta_resid <- residuals(cox_fit, type = "dfbeta")
+
+# Plot influence on the 'age' coefficient (column 2)
+ggplot(data.frame(index = seq_along(dfbeta_resid[, 2]), dfbeta = dfbeta_resid[, 2]),
+       aes(index, dfbeta)) +
+  geom_point(alpha = 0.4) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "Observation index", y = "dfbeta (age coefficient)")
+```
 
 ## Stratification  
 
-## Time dependent covariates  
+If a covariate violates the PH assumption but we still want to adjust for it, we can *stratify* on it. The model estimates a separate baseline hazard $h_{0k}(t)$ for each stratum $k$, while keeping the $\beta$ coefficients common across strata.
+
+```{r}
+#| label: stratified-cox
+
+cox_strat <- coxph(
+  Surv(time, status) ~ age + strata(sex),
+  data = lung
+)
+
+summary(cox_strat)
+```
+
+::: {.callout-note}
+Stratification removes the stratifying variable from the set of estimated hazard ratios. You cannot obtain a HR for `sex` from this model. Use stratification when you need to control for a variable but are not interested in its effect estimate.
+:::
+
+## Time-dependent covariates  
+
+When a covariate's value changes during follow-up (e.g., a drug dose, lab value, or treatment switch), the standard Cox model cannot handle it correctly. The solution is to expand the dataset into *counting process* format using `(tstart, tstop]` intervals.  
+
+It's important that covariates only include information about the past and present. An example of where time dependent covariates can be used is when there is a change in medication because a new treatment becomes available. An example where it is not appropriate is when the medication is changed because the status of the patient deteriorates (is related to the outcome). This may then produce the counter-intuitive conclusion that changing the medication resulted in poorer survival.  
+
+We will use a short example from the Stanford Heart Transplant data.  
+
+```{r}
+#| label: time-dep-setup
+
+# Illustrative example using the heart dataset 
+head(heart)
+```
+
+The `Surv(start, stop, event)` three-argument form specifies the counting process:
+
+```{r}
+#| label: time-dep-cox
+
+cox_td <- coxph(
+  Surv(start, stop, event) ~ transplant + age + year + surgery,
+  data = heart
+)
+
+tidy(cox_td, exponentiate = TRUE, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high, p.value)
+
+```
+
+::: {.callout-caution}
+Time-dependent covariates must be defined using only *past* information — values known before the start of each interval. Using future information (e.g., a post-event measurement) introduces **immortal time bias** and will give misleading results.  
+
+Consider if we included a baseline covariate for obtaining a transplant at some point. Recieving (or not) a transplant leaks information about patient survival characteristics and will bias estimates of survival prior to the transplant occuring. Transplant patients had to "survive" the pre-transplant window to receive the organ, that waiting period is erroneously attributed as a survival benefit of the transplant itself. 
+:::
+
 
