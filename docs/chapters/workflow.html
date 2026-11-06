@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -50,7 +84,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../chapters/faq.html" rel="next">
+<link href="../chapters/resources.html" rel="next">
 <link href="../chapters/parametric.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -188,14 +222,8 @@ div.csl-indent {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">FAQ</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../chapters/mathematics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Mathematics</span></a>
+  <a href="../chapters/resources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Further Resources</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -216,7 +244,12 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#end-to-end" id="toc-end-to-end" class="nav-link active" data-scroll-target="#end-to-end"><span class="header-section-number">5.1</span> End to End</a></li>
+  <li><a href="#exploratory-analysis" id="toc-exploratory-analysis" class="nav-link active" data-scroll-target="#exploratory-analysis"><span class="header-section-number">5.1</span> Exploratory Analysis</a></li>
+  <li><a href="#kaplan-meier-plots" id="toc-kaplan-meier-plots" class="nav-link" data-scroll-target="#kaplan-meier-plots"><span class="header-section-number">5.2</span> Kaplan-Meier Plots</a></li>
+  <li><a href="#model-building" id="toc-model-building" class="nav-link" data-scroll-target="#model-building"><span class="header-section-number">5.3</span> Model Building</a></li>
+  <li><a href="#diagnostics" id="toc-diagnostics" class="nav-link" data-scroll-target="#diagnostics"><span class="header-section-number">5.4</span> Diagnostics</a></li>
+  <li><a href="#outputs" id="toc-outputs" class="nav-link" data-scroll-target="#outputs"><span class="header-section-number">5.5</span> Outputs</a></li>
+  <li><a href="#end-to-end-case-study" id="toc-end-to-end-case-study" class="nav-link" data-scroll-target="#end-to-end-case-study"><span class="header-section-number">6</span> End to End Case Study</a></li>
   </ul>
 </nav>
     </div>
@@ -242,18 +275,62 @@ div.csl-indent {
 </header>
 
 
+<p>A standard workflow for approaching survival analysis is given below. This will change for any given analysis, but forms a useful starting point.</p>
+<section id="exploratory-analysis" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="exploratory-analysis"><span class="header-section-number">5.1</span> Exploratory Analysis</h2>
+<ol type="1">
+<li><p><strong>Check number of failures is sufficient</strong>: For each level of categorical variables to be included in the model there should usually be a minimum of about 10. If there are not sufficient for one level of a category, it may be possible to rectify this by merging categories, but only with the guidance of a subject matter expert.</p></li>
+<li><p><strong>Plot the distribution of continuous predictors:</strong> This is typically achieved through histograms or other univariate methods. Highly skewed distributions may be good candidates for transformations. It is also useful to check for associations between variables using cross tabulation, scatterplots etc.</p></li>
+</ol>
+</section>
+<section id="kaplan-meier-plots" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="kaplan-meier-plots"><span class="header-section-number">5.2</span> Kaplan-Meier Plots</h2>
+<p>As an exploratory technique, Kaplan-Meier plots can be made for the entire marginal survival data, however there is significant benefit in stratifying these plots by the categorical variables in your data. Furthermore, continuous variables can be discretized into 2 or 3 levels and the Kaplan-Meier curves compared.</p>
+</section>
+<section id="model-building" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="model-building"><span class="header-section-number">5.3</span> Model Building</h2>
+<p>Some authors suggest a step-wise process for model fitting. These methods should be used with caution and a deeper appreication for the scientific merics of including/excluding variables, and not as a dogmatic exercise. The following guide is adapted from <span class="citation" data-cites="hosmer2008applied">Hosmer Jr, Lemeshow, and May (<a href="references.html#ref-hosmer2008applied" role="doc-biblioref">2008</a>)</span>:</p>
+<ol type="1">
+<li><p>Conduct univariate analysis to detect significant differences in survival curves for each variable.</p></li>
+<li><p>Fit a multivariable model containing all variables significant in the univariable analysis at the 20-25 percent level.</p></li>
+<li><p>Use the p-values from the Wald tests of the individual coefficients to identify covariates that might be deleted from the model.</p></li>
+<li><p>Following the fit of the reduced model, we assess whether removal of the covariate has produced an ‘important’ change in the coefficients of the variables remaining in the model. If the variable excluded is an important confounder, it should be added back into the model. This process continues until no covariates can be deleted from the model.</p></li>
+<li><p>At this point, we add to the model, one at a time, all variables excluded from the initial multivariable model to confirm that they are neither statistically significant nor an important confounder.</p></li>
+<li><p>Test for the addition of more complex interaction terms.</p></li>
+</ol>
+</section>
+<section id="diagnostics" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="diagnostics"><span class="header-section-number">5.4</span> Diagnostics</h2>
+<ul>
+<li><p>Check proportional hazards and modify model if required. A useful measures to control for violation of the proportional hazards assumption is to stratify by the offending variable.</p></li>
+<li><p>Check diagnostics for final model:</p>
+<ul>
+<li>Proportional hazards</li>
+<li>Cox-Snell<br>
+</li>
+<li>dfBeta</li>
+</ul></li>
+</ul>
+</section>
+<section id="outputs" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="outputs"><span class="header-section-number">5.5</span> Outputs</h2>
+<ol type="1">
+<li>Predicted survival curves<br>
+</li>
+<li>Tabulated hazard rates</li>
+</ol>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TD
-  A[(survival data)] --&gt; B[Kaplan-Meier Estimator]
+  A[(survival data)] --&gt; X[Exploratory Analysis]
+  X[Exploratory Analysis]--&gt; B[Kaplan-Meier Estimator]
   B --&gt; C[Log Rank Test]  
   C --&gt; D[Cox Proportional Hazards Model]
   C -.-&gt; E[Fully parametric model]  
-  C -.-&gt; F[AFT, other exotic..]
-  D --&gt; G[Diagnostics]
+  D --&gt; G[Diagnostics &amp; Model Fitting]
   G --&gt; D
   
   
@@ -264,51 +341,399 @@ div.csl-indent {
 </div>
 </div>
 </div>
-<ol type="a">
-<li>Initial displays</li>
-<li>Check number of failures is sufficient for</li>
-<li>For all subjects</li>
-</ol>
-<ol start="2" type="i">
-<li>For each level of categorical variables to be included in the model For each there should usually be a minimum of about 10, although some authors suggest 5. If there are not sufficient for one level of a category, it may be possible to rectify this by merging categories, but only with the guidance of a clinician. Another option is to exclude these subjects from the analysis. If this is not possible, profile likelihood and Bayesian methods can be used but are beyond this course. This will also identify if any category values are not defined.</li>
-<li>Distribution of continuous predictors The usual method is to use histograms as a graphical summary is usually easier to interpret. What we are interested in is are there unusual values, for example zeroes or negative values which may be used to indicate missing data, or simply values that are so extreme that they are not biologically feasible. Skewness may indicate the need for a transformation.</li>
-<li>Kaplan-Meier Plots</li>
-</ol>
-<p>These should be performed for each categorical predictor and for continuous pre- dictors by classifying into a small number of groups, usually 3. What is of interest</p>
-<p>is whether there appears to be an effect of a predictor, and whether that effect is similar over time. For continuous predictors it may also give an indication that the effect is linear. If a numerical summary is required or useful then medians with confidence intervals or percentage survival and confidence interval at a sensible time are suitable. iv. Relations (optional) It may also be useful to investigate the relationship between the predictors. This can be achieved through 2-way tabulation of categorical predictors, matrix scatter plots of continuous predictors and boxplots of continuous predictors by categorical predictors. b. Model Building i. Perform steps from HL&amp;M</p>
-<ol type="1">
-<li><p>We begin by fitting a multivariable model containing all variables significant in the univariable analysis at the 20-25 percent level,</p></li>
-<li><p>we use the p- values from the Wald tests of the individual coefficients to identify covariates that might be deleted from the model.</p></li>
-<li><p>Following the fit of the reduced model, we assess whether removal of</p></li>
-</ol>
-<p>the covariate has produced an “important” change in the coefficients of the vari- ables remaining in the model. In general, we use a value of about 20 percent as an</p>
-<p>indicator of an important change in a coefficient. If the variable excluded is an</p>
-<p>important confounder, it should be added back into the model. This process con- tinues until no covariates can be deleted from the model.</p>
-<ol start="4" type="1">
-<li><p>At this point, we add to the model, one at a time, all variables ex- cluded from the initial multivariable model to confirm that they are neither statisti- cally significant nor an important confounder.</p></li>
-<li><p>Interactions</p></li>
-</ol>
-<ol start="2" type="i">
-<li>Check proportional hazards and modify model if required</li>
-<li>Repeat until proportional hazards is OK</li>
-<li>Check diagnostics for final model</li>
-<li>Proportional hazards</li>
-<li>Cox-Snell</li>
-<li>dfBeta</li>
-<li>Predicted survival curves These are useful for showing the effect of predictors and the survival over time. Especially useful with stratified models, as they show how survival differs between the strata.</li>
-</ol>
-<ol start="5" type="a">
-<li>Tabulated hazard rates</li>
-</ol>
-<p>For continuous predictors this should include units. For categorical predictors the refer- ence level should be included. Where a transformation or polynomial has been used, it</p>
-<p>should show the variation in the effect by showing the hazard ratio at a number of values, and for published work it may be useful to generate a plot.</p>
-<section id="end-to-end" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="end-to-end"><span class="header-section-number">5.1</span> End to End</h2>
+</section>
+<section id="end-to-end-case-study" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> End to End Case Study</h1>
+<p>For patients with advanced lung cancer from the North Central Cancer Treatment Group, how does age and sex effect survival?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsurvfit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ lubridate 1.9.4     ✔ tibble    3.2.1
+✔ purrr     1.0.4     ✔ tidyr     1.3.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(cancer)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>lung_df <span class="ot">&lt;-</span> lung <span class="sc">|&gt;</span> </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(time, status, age, sex) <span class="sc">|&gt;</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">status =</span> status<span class="dv">-1</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_cat =</span> <span class="fu">cut</span>(age, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">70</span>, <span class="dv">90</span>))</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lung_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  time status age sex age_cat
+1  306      1  74   1 (70,90]
+2  455      1  68   1 (50,70]
+3 1010      0  56   1 (50,70]
+4  210      1  57   1 (50,70]
+5  883      1  60   1 (50,70]
+6 1022      0  74   1 (70,90]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(lung_df<span class="sc">$</span>status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  0   1 
+ 63 165 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(lung_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">lung_df</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">228</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: factor</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 11%">
+<col style="width: 15%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: left;">ordered</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: left;">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">age_cat</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">(50: 156, (70: 46, (30: 26, (0,: 0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 3%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">time</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">305.23</td>
+<td style="text-align: right;">210.65</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">166.75</td>
+<td style="text-align: right;">255.5</td>
+<td style="text-align: right;">396.5</td>
+<td style="text-align: right;">1022</td>
+<td style="text-align: left;">▇▇▃▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">status</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▃▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">62.45</td>
+<td style="text-align: right;">9.07</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">56.00</td>
+<td style="text-align: right;">63.0</td>
+<td style="text-align: right;">69.0</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: left;">▂▅▇▇▃</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sex</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.39</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">▇▁▁▁▅</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(lung_df<span class="sc">$</span>time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workflow_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(lung_df<span class="sc">$</span>age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workflow_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> lung_df) <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_quantile</span>(<span class="at">y_value =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray50"</span>) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workflow_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex, <span class="at">data =</span> lung_df) <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_quantile</span>(<span class="at">y_value =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray50"</span>) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workflow_files/figure-html/unnamed-chunk-2-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survfit2</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> age_cat, <span class="at">data =</span> lung_df) <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsurvfit</span>() <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_confidence_interval</span>() <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_risktable</span>() <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_quantile</span>(<span class="at">y_value =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray50"</span>) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_ggsurvfit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workflow_files/figure-html/unnamed-chunk-2-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survdiff</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex, <span class="at">data =</span> lung_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+survdiff(formula = Surv(time, status) ~ sex, data = lung_df)
+
+        N Observed Expected (O-E)^2/E (O-E)^2/V
+sex=1 138      112     91.6      4.55      10.3
+sex=2  90       53     73.4      5.68      10.3
+
+ Chisq= 10.3  on 1 degrees of freedom, p= 0.001 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">coxph</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex <span class="sc">+</span> age,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> lung_df</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = Surv(time, status) ~ sex + age, data = lung_df)
+
+  n= 228, number of events= 165 
+
+         coef exp(coef)  se(coef)      z Pr(&gt;|z|)   
+sex -0.513219  0.598566  0.167458 -3.065  0.00218 **
+age  0.017045  1.017191  0.009223  1.848  0.06459 . 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    exp(coef) exp(-coef) lower .95 upper .95
+sex    0.5986     1.6707    0.4311    0.8311
+age    1.0172     0.9831    0.9990    1.0357
+
+Concordance= 0.603  (se = 0.025 )
+Likelihood ratio test= 14.12  on 2 df,   p=9e-04
+Wald test            = 13.47  on 2 df,   p=0.001
+Score (logrank) test = 13.72  on 2 df,   p=0.001</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(fit, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, conf.low, conf.high, p.value) <span class="sc">|&gt;</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+<th style="text-align: right;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">sex</td>
+<td style="text-align: right;">0.599</td>
+<td style="text-align: right;">0.431</td>
+<td style="text-align: right;">0.831</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">1.017</td>
+<td style="text-align: right;">0.999</td>
+<td style="text-align: right;">1.036</td>
+<td style="text-align: right;">0.065</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cox.zph</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       chisq df    p
+sex    2.608  1 0.11
+age    0.209  1 0.65
+GLOBAL 2.771  2 0.25</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Survival curve for a 60-year-old female (sex=2) </span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>new_patient <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">65</span>), <span class="at">sex =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>cox_surv <span class="ot">&lt;-</span> <span class="fu">survfit</span>(fit, <span class="at">newdata =</span> new_patient)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>cox_surv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: survfit(formula = fit, newdata = new_patient)
+
+    n events median 0.95LCL 0.95UCL
+1 228    165    283     222     320
+2 228    165    371     320     524</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cox_surv, <span class="at">xlab =</span> <span class="st">"Days"</span>, <span class="at">ylab =</span> <span class="st">"S(t)"</span>, <span class="at">main =</span> <span class="st">"Covariate-adjusted survival"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workflow_files/figure-html/unnamed-chunk-2-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-knuth84" class="csl-entry" role="listitem">
-Knuth, Donald E. 1984. <span>“Literate Programming.”</span> <em>Comput. J.</em> 27 (2): 97–111. <a href="https://doi.org/10.1093/comjnl/27.2.97">https://doi.org/10.1093/comjnl/27.2.97</a>.
+<div id="ref-bradburn2003survival3" class="csl-entry" role="listitem">
+Bradburn, Michael J, Taane G Clark, Sharon B Love, and Douglas G Altman. 2003. <span>“Survival Analysis Part III: Multivariate Data Analysis–Choosing a Model and Assessing Its Adequacy and Fit.”</span> <em>British Journal of Cancer</em> 89 (4): 605–11.
+</div>
+<div id="ref-bradburn2003survival2" class="csl-entry" role="listitem">
+Bradburn, Mike J, Taane G Clark, Sharon B Love, and Douglas Graham Altman. 2003. <span>“Survival Analysis Part II: Multivariate Data Analysis–an Introduction to Concepts and Methods.”</span> <em>British Journal of Cancer</em> 89 (3): 431–36.
+</div>
+<div id="ref-clark2003survival4" class="csl-entry" role="listitem">
+Clark, Taane G, Michael J Bradburn, Sharon B Love, and DG2394469 Altman. 2003a. <span>“Survival Analysis Part IV: Further Concepts and Methods in Survival Analysis.”</span> <em>British Journal of Cancer</em> 89 (5): 781–86.
+</div>
+<div id="ref-clark2003survival2" class="csl-entry" role="listitem">
+Clark, Taane G, Michael J Bradburn, Sharon B Love, and Douglas G Altman. 2003b. <span>“Survival Analysis Part i: Basic Concepts and First Analyses.”</span> <em>British Journal of Cancer</em> 89 (2): 232–38.
+</div>
+<div id="ref-harrell2001regression" class="csl-entry" role="listitem">
+Harrell, Frank E et al. 2001. <em>Regression Modeling Strategies: With Applications to Linear Models, Logistic Regression, and Survival Analysis</em>. Vol. 608. Springer.
+</div>
+<div id="ref-hosmer2008applied" class="csl-entry" role="listitem">
+Hosmer Jr, David W, Stanley Lemeshow, and Susanne May. 2008. <em>Applied Survival Analysis: Regression Modeling of Time-to-Event Data</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-ggsurvfit" class="csl-entry" role="listitem">
+Sjoberg, Daniel D., Shreya Sreeram, Mark Baillie, Charlotta Fruechtenicht, Steven Haesendonckx, and Tim Treis. 2026. <em>Ggsurvfit: Flexible Time-to-Event Figures</em>. <a href="https://github.com/pharmaverse/ggsurvfit">https://github.com/pharmaverse/ggsurvfit</a>.
+</div>
+<div id="ref-survival-package" class="csl-entry" role="listitem">
+Therneau, Terry M. 2024. <em>A Package for Survival Analysis in r</em>. <a href="https://CRAN.R-project.org/package=survival">https://CRAN.R-project.org/package=survival</a>.
 </div>
 </div>
 </section>
@@ -738,8 +1163,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../chapters/faq.html" class="pagination-link" aria-label="FAQ">
-        <span class="nav-page-text">FAQ</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../chapters/resources.html" class="pagination-link" aria-label="Further Resources">
+        <span class="nav-page-text">Further Resources</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

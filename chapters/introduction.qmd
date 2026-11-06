@@ -132,7 +132,7 @@ time_raw |>
 ```
 
 
-## Example Datasets  
+## Example Datasets {#sec-data}
 
 The `{survival}` package has many build in datasets for use.  
 

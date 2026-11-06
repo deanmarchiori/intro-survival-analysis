@@ -1,0 +1,30 @@
+# Further Resources {.unnumbered}
+
+
+## Introductory tutorials  
+
+[Survival Analysis in R](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html)  
+[An Introduction to Survival Analysis in R with Emily Zabor](https://www.youtube.com/watch?v=VenrZGkDJcU)  
+
+## More in-depth tutorials   
+
+Clark, T., Bradburn, M., Love, S. et al. Survival Analysis Part I: Basic concepts and first analyses. Br J Cancer 89, 232–238 (2003). [https://doi.org/10.1038/sj.bjc.6601118](https://doi.org/10.1038/sj.bjc.6601118)
+
+Bradburn, M., Clark, T., Love, S. et al. Survival Analysis Part II: Multivariate data analysis – an introduction to concepts and methods. Br J Cancer 89, 431–436 (2003). [https://doi.org/10.1038/sj.bjc.6601119](https://doi.org/10.1038/sj.bjc.6601119)
+
+Bradburn, M., Clark, T., Love, S. et al. Survival Analysis Part III: Multivariate data analysis – choosing a model and assessing its adequacy and fit. Br J Cancer 89, 605–611 (2003). [https://doi.org/10.1038/sj.bjc.6601120](https://doi.org/10.1038/sj.bjc.6601120)
+
+Clark, T., Bradburn, M., Love, S. et al. Survival Analysis Part IV: Further concepts and methods in survival analysis. Br J Cancer 89, 781–786 (2003). [https://doi.org/10.1038/sj.bjc.6601117](https://doi.org/10.1038/sj.bjc.6601117  )
+
+
+## Text books  
+
+Harrell, F. E. (2001). Regression modeling strategies: with applications to linear models, logistic regression, and survival analysis (Vol. 608). New York: springer.
+
+Hosmer Jr, D. W., Lemeshow, S., & May, S. (2008). Applied survival analysis: regression modeling of time-to-event data (Vol. 618). John Wiley & Sons.
+
+## Software  
+
+[survival R package](https://cran.r-project.org/web/packages/survival/index.html)
+
+[ggsurvfit: Flexible Time-to-Event Figures](https://cran.r-project.org/web/packages/ggsurvfit/index.html)

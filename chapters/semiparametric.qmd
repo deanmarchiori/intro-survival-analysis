@@ -8,6 +8,8 @@ library(survival)
 library(ggsurvfit) 
 library(tidyverse)
 library(broom)
+print(citation('ggsurvfit'), bibtex = T)
+
 ```
 
 In the previous section we explored an effective method for univariate analysis, and even extended this to comparing a few discrete groups e.g. disease categories, sex, age groups. Can we extend this to studying the effects of a number of covariates, similar to how we do regression modelling?  
@@ -161,7 +163,9 @@ The model we are fitting is
 $$
 h(t) = h_0(t) \exp{(\beta_0 + \beta_1x_1 + ...)}
 $$
-The `coxph()` function estimates the partial likelihood — it finds $\hat{\beta}$ without needing to specify or estimate the baseline hazard $h_0(t)$. That is the key advantage of the Cox model: it is *semiparametric* in that the baseline hazard is left completely unspecified.  
+The `coxph()` function estimates the partial likelihood — it finds $\hat{\beta}$ without needing to specify or estimate the baseline hazard $h_0(t)$. That is the key advantage of the Cox model: it is *semiparametric* in that the baseline hazard is left completely unspecified.    
+
+We will be using the `lung` dataset from the `{survival}` package. This dataset measures survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. For more information see @sec-data.  
 
 ```{r}
 #| label: fit-cox

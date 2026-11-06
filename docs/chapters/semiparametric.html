@@ -248,14 +248,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">FAQ</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../chapters/mathematics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Mathematics</span></a>
+  <a href="../chapters/resources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Further Resources</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -419,6 +413,7 @@ Note
 <p><span class="math display">\[
 h(t) = h_0(t) \exp{(\beta_0 + \beta_1x_1 + ...)}
 \]</span> The <code>coxph()</code> function estimates the partial likelihood — it finds <span class="math inline">\(\hat{\beta}\)</span> without needing to specify or estimate the baseline hazard <span class="math inline">\(h_0(t)\)</span>. That is the key advantage of the Cox model: it is <em>semiparametric</em> in that the baseline hazard is left completely unspecified.</p>
+<p>We will be using the <code>lung</code> dataset from the <code>{survival}</code> package. This dataset measures survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. For more information see <a href="introduction.html#sec-data" class="quarto-xref"><span>Section 1.4</span></a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cox_fit <span class="ot">&lt;-</span> <span class="fu">coxph</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex <span class="sc">+</span> age,</span>
@@ -800,8 +795,29 @@ Caution
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-knuth84" class="csl-entry" role="listitem">
-Knuth, Donald E. 1984. <span>“Literate Programming.”</span> <em>Comput. J.</em> 27 (2): 97–111. <a href="https://doi.org/10.1093/comjnl/27.2.97">https://doi.org/10.1093/comjnl/27.2.97</a>.
+<div id="ref-bradburn2003survival3" class="csl-entry" role="listitem">
+Bradburn, Michael J, Taane G Clark, Sharon B Love, and Douglas G Altman. 2003. <span>“Survival Analysis Part III: Multivariate Data Analysis–Choosing a Model and Assessing Its Adequacy and Fit.”</span> <em>British Journal of Cancer</em> 89 (4): 605–11.
+</div>
+<div id="ref-bradburn2003survival2" class="csl-entry" role="listitem">
+Bradburn, Mike J, Taane G Clark, Sharon B Love, and Douglas Graham Altman. 2003. <span>“Survival Analysis Part II: Multivariate Data Analysis–an Introduction to Concepts and Methods.”</span> <em>British Journal of Cancer</em> 89 (3): 431–36.
+</div>
+<div id="ref-clark2003survival4" class="csl-entry" role="listitem">
+Clark, Taane G, Michael J Bradburn, Sharon B Love, and DG2394469 Altman. 2003a. <span>“Survival Analysis Part IV: Further Concepts and Methods in Survival Analysis.”</span> <em>British Journal of Cancer</em> 89 (5): 781–86.
+</div>
+<div id="ref-clark2003survival2" class="csl-entry" role="listitem">
+Clark, Taane G, Michael J Bradburn, Sharon B Love, and Douglas G Altman. 2003b. <span>“Survival Analysis Part i: Basic Concepts and First Analyses.”</span> <em>British Journal of Cancer</em> 89 (2): 232–38.
+</div>
+<div id="ref-harrell2001regression" class="csl-entry" role="listitem">
+Harrell, Frank E et al. 2001. <em>Regression Modeling Strategies: With Applications to Linear Models, Logistic Regression, and Survival Analysis</em>. Vol. 608. Springer.
+</div>
+<div id="ref-hosmer2008applied" class="csl-entry" role="listitem">
+Hosmer Jr, David W, Stanley Lemeshow, and Susanne May. 2008. <em>Applied Survival Analysis: Regression Modeling of Time-to-Event Data</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-ggsurvfit" class="csl-entry" role="listitem">
+Sjoberg, Daniel D., Shreya Sreeram, Mark Baillie, Charlotta Fruechtenicht, Steven Haesendonckx, and Tim Treis. 2026. <em>Ggsurvfit: Flexible Time-to-Event Figures</em>. <a href="https://github.com/pharmaverse/ggsurvfit">https://github.com/pharmaverse/ggsurvfit</a>.
+</div>
+<div id="ref-survival-package" class="csl-entry" role="listitem">
+Therneau, Terry M. 2024. <em>A Package for Survival Analysis in r</em>. <a href="https://CRAN.R-project.org/package=survival">https://CRAN.R-project.org/package=survival</a>.
 </div>
 </div>
 </section>
