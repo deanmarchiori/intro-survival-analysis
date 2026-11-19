@@ -8,7 +8,7 @@ library(survival)
 library(ggsurvfit) 
 library(tidyverse)
 library(broom)
-print(citation('ggsurvfit'), bibtex = T)
+
 
 ```
 

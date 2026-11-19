@@ -60,7 +60,7 @@ km1
 
 ```{r}
 #| include: false
-write_csv(km1, "km_byhand.csv")
+write_csv(km1, "../resources/km_byhand.csv")
 ```
    
 

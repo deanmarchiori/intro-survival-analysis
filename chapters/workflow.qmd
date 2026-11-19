@@ -45,6 +45,8 @@ Some authors suggest a step-wise process for model fitting. These methods should
 1. Predicted survival curves  
 2. Tabulated hazard rates
 
+## Workflow Diagram  
+
 ```{mermaid}
 flowchart TD
   A[(survival data)] --> X[Exploratory Analysis]
